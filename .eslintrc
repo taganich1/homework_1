@@ -54,7 +54,7 @@
     "one-var-declaration-per-line": "error",
     "quotes": [
       "error",
-      "single"
+      "double"
     ],
     "max-statements-per-line": [
       "error",
