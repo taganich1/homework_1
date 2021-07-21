@@ -17,23 +17,29 @@
    isAllTrue([100, 2, 3, 4, 5], n => n < 10) // вернет false
  */
 function isAllTrue(array, fn) {
-    if (!array.isArray) {
-        throw new Error("empty array");
-    }
+    let trueArg = 0;
+    let falseArg = 0;
 
-    if (array.length == 0) {
+    if (array == 0 || array.length == 0 || !Array.isArray(array)) {
         throw new Error("empty array");
-    }
-
-    if (typeof fn !== "function") {
+    } else if (typeof fn != "function") {
         throw new Error("fn is not a function");
-    }
+    } else {
+        for (var i = 0; i < array.length; i++) {
+            let result = fn(array[i]);
 
-    if (array.every(fn)) {
-        return true;
+            if (result == false) {
+                falseArg++;
+            } else if (result == true) {
+                trueArg++;
+            }
+            if (array.length == trueArg) {
+                return true;
+            } else if (falseArg > 0) {
+                return false;
+            }
+        }
     }
-
-    return false;
 }
 
 /*
@@ -53,23 +59,29 @@ function isAllTrue(array, fn) {
    isSomeTrue([1, 2, 3, 4, 5], n => n > 20) // вернет false
  */
 function isSomeTrue(array, fn) {
-    if (!array.isArray) {
-        throw new Error("empty array");
-    }
+    let trueArg = 0;
+    let falseArg = 0;
 
-    if (array.length == 0) {
+    if (array == 0 || array.length == 0 || !Array.isArray(array)) {
         throw new Error("empty array");
-    }
-
-    if (typeof fn !== "function") {
+    } else if (typeof fn != "function") {
         throw new Error("fn is not a function");
-    }
+    } else {
+        for (var i = 0; i < array.length; i++) {
+            let result = fn(array[i]);
 
-    if (array.some(fn)) {
-        return true;
+            if (result == false) {
+                falseArg++;
+            } else if (result == true) {
+                trueArg++;
+            }
+            if (trueArg > 0) {
+                return true;
+            } else if (array.length == falseArg) {
+                return false;
+            }
+        }
     }
-
-    return false;
 }
 
 /*
@@ -84,16 +96,20 @@ function isSomeTrue(array, fn) {
    - fn не является функцией (с текстом "fn is not a function")
  */
 function returnBadArguments(fn) {
-  
- const array = []
+    var result = [];
 
-    if (typeof fn !== "function") {
+    if (typeof fn != "function") {
         throw new Error("fn is not a function");
-    } else {
-        array.every(fn){
-          return array.push(rest);
-        };
     }
+    for (var i = 1; i < arguments.length; i++) {
+        try {
+            fn(arguments[i]);
+        } catch (e) {
+            result.push(arguments[i]);
+        }
+    }
+
+    return result;
 }
 
 /*
@@ -114,13 +130,48 @@ function returnBadArguments(fn) {
    - какой-либо из аргументов div является нулем (с текстом "division by 0")
  */
 function calculator(number = 0) {
-
-  return {
-    this.sum = function (number) {
-      
+    if (typeof number != "number") {
+        throw new Error("number is not a number");
     }
-  }
 
+    let obj = {
+        sum: function () {
+            for (let i = 0; i < arguments.length; i++) {
+                number += arguments[i];
+            }
+
+            return number;
+        },
+
+        dif: function () {
+            for (let i = 0; i < arguments.length; i++) {
+                number -= arguments[i];
+            }
+
+            return number;
+        },
+
+        div: function () {
+            for (let i = 0; i < arguments.length; i++) {
+                if (arguments[i] == 0) {
+                    throw new Error("division by 0");
+                }
+                number /= arguments[i];
+            }
+
+            return number;
+        },
+
+        mul: function () {
+            for (let i = 0; i < arguments.length; i++) {
+                number *= arguments[i];
+            }
+
+            return number;
+        },
+    };
+
+    return obj;
 }
 
 /* При решении задач, пострайтесь использовать отладчик */
