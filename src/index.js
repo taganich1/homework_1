@@ -14,6 +14,8 @@ function createDivWithText(text) {
     const div = document.createElement("div");
 
     div.textContent = text;
+
+    return div;
 }
 
 /*
@@ -162,17 +164,36 @@ function deleteTextNodesRecursive(where) {
    }
  */
 function collectDOMStat(root) {
-    const path = document.querySelector(root);
-
-    let result = {
-        textNode: 0,
-        classElement: 0,
-        tagElement: 0,
+    const stat = {
+        tags: {},
+        classes: {},
+        texts: 0,
     };
 
-    for (let i = 0; i < path.length; i++) {
-        console.log(path[i]);
+    function scan(root) {
+        for (const child of root.childNodes) {
+            if (child.nodeType == Node.TEXT_NODE) {
+                stat.texts++;
+            } else if (child.nodeType == Node.ELEMENT_NODE) {
+                if (child.tagName in stat.tags) {
+                    stat.tags[child.tagName]++;
+                } else {
+                    stat.tags[child.tagName] = 1;
+                }
+                for (const className of child.classList) {
+                    if (className in stat.classes) {
+                        stat.classes[className]++;
+                    } else {
+                        stat.classes[className] = 1;
+                    }
+                }
+                scan(child);
+            }
+        }
     }
+    scan(root);
+
+    return stat;
 }
 
 /*
@@ -208,7 +229,29 @@ function collectDOMStat(root) {
    }
  */
 function observeChildNodes(where, fn) {
-    fn(where);
+    const config = {
+        childList: true,
+        subtree: true,
+    };
+
+    const callback = function (mutationList) {
+        for (let mutation of mutationList) {
+            if (mutation.type == "childList") {
+                fn({
+                    type: mutation.addedNodes.length ? "insert" : "remove",
+                    nodes: [
+                        ...(mutation.addedNodes.length
+                            ? mutation.addedNodes
+                            : mutation.removedNodes),
+                    ],
+                });
+            }
+        }
+    };
+
+    const observer = new MutationObserver(callback);
+
+    observer.observe(where, config);
 }
 
 export {

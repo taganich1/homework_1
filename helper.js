@@ -4,11 +4,19 @@ export function randomNumber(min = 0, max = 100) {
 
 export function randomValue(types, maxDepth = 2) {
     let depth = 0;
-    let allTypes = ['string', 'number', 'boolean', 'null', 'undefined', 'array', 'object'];
+    let allTypes = [
+        "string",
+        "number",
+        "boolean",
+        "null",
+        "undefined",
+        "array",
+        "object",
+    ];
     let type;
 
     if (types) {
-        types = Array.isArray(types) ? types : [types]
+        types = Array.isArray(types) ? types : [types];
     } else {
         types = allTypes;
     }
@@ -16,7 +24,7 @@ export function randomValue(types, maxDepth = 2) {
     type = randomNumber(0, types.length - 1);
 
     switch (types[type]) {
-        case 'string': {
+        case "string": {
             let length = randomNumber(3, 10);
             let string = [];
 
@@ -24,15 +32,15 @@ export function randomValue(types, maxDepth = 2) {
                 string.push(String.fromCharCode(randomNumber(33, 126)));
             }
 
-            return string.join('');
+            return string.join("");
         }
-        case 'number':
+        case "number":
             return randomNumber();
-        case 'boolean':
+        case "boolean":
             return !!randomNumber(0, 1);
-        case 'null':
+        case "null":
             return null;
-        case 'array': {
+        case "array": {
             if (depth < maxDepth) {
                 let length = randomNumber(3, 10);
                 let array = [];
@@ -40,7 +48,14 @@ export function randomValue(types, maxDepth = 2) {
                 depth++;
 
                 for (let i = 0; i < length; i++) {
-                    array.push(randomValue(depth == maxDepth ? allTypes.slice(0, -2) : allTypes, maxDepth - depth));
+                    array.push(
+                        randomValue(
+                            depth == maxDepth
+                                ? allTypes.slice(0, -2)
+                                : allTypes,
+                            maxDepth - depth
+                        )
+                    );
                 }
 
                 return array;
@@ -48,7 +63,7 @@ export function randomValue(types, maxDepth = 2) {
                 return randomValue(allTypes.slice(0, -2));
             }
         }
-        case 'object': {
+        case "object": {
             if (depth < maxDepth) {
                 let length = randomNumber(3, 10);
                 let object = {};
@@ -56,9 +71,12 @@ export function randomValue(types, maxDepth = 2) {
                 depth++;
 
                 for (let i = 0; i < length; i++) {
-                    let key = randomValue('string');
+                    let key = randomValue("string");
 
-                    object[key] = randomValue(depth == maxDepth ? allTypes.slice(0, -2) : allTypes, maxDepth - depth);
+                    object[key] = randomValue(
+                        depth == maxDepth ? allTypes.slice(0, -2) : allTypes,
+                        maxDepth - depth
+                    );
                 }
 
                 return object;
@@ -69,14 +87,23 @@ export function randomValue(types, maxDepth = 2) {
     }
 }
 
-export function randomNumberArray(mode, minLength = 3, maxLength = 10, min, max) {
+export function randomNumberArray(
+    mode,
+    minLength = 3,
+    maxLength = 10,
+    min,
+    max
+) {
     let length = randomNumber(minLength, maxLength);
     let array = [];
 
     for (let i = 0; i < length; i++) {
         let number = randomNumber(min, max);
 
-        if ((mode == 'even' && number % 2) || (mode == 'odd' && !(number % 2))) {
+        if (
+            (mode == "even" && number % 2) ||
+            (mode == "odd" && !(number % 2))
+        ) {
             number++;
         }
 
@@ -91,7 +118,7 @@ export function randomStringArray(minLength = 3, maxLength = 10) {
     let array = [];
 
     for (let i = 0; i < length; i++) {
-        array.push(randomValue('string'));
+        array.push(randomValue("string"));
     }
 
     return array;
